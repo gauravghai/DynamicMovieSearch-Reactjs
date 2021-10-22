@@ -1,9 +1,11 @@
 import React, { Component } from 'react'
-import CardTitle from './components/Movies/CardTitle';
-import CardImage from './components/Movies/CardImage';
+import Header from './components/Header';
+import Card from './components/Movies/Card';
 import Player from './components/Movies/Player';
+import Error from './components/Error';
+import LoaderGif from './assets/Loader.gif'
 import './App.css';
-import ReactDOM from 'react-dom';
+
 class App extends React.Component {
   constructor(props) {
     super(props);
@@ -11,12 +13,16 @@ class App extends React.Component {
       error: null,
       isLoaded: false,
       items: [],
-      movies: []
+      movies: [],
+      player: false,
+      playerOffsetParent: false,
+      playerData: [],
+      screenWidth: 1700
     };
   }
 
   componentDidMount() {
-    fetch("https://www.htmlhints.com/api/data.php")
+    fetch("https://peaceful-forest-62260.herokuapp.com/")
       .then(res => res.json())
       .then(
         (result) => {
@@ -25,71 +31,86 @@ class App extends React.Component {
             items: result,
             movies: result.moviesData
           });
-          console.log(this.state.movies);
+          console.log(2);
         },
-        // Note: it's important to handle errors here
-        // instead of a catch() block so that we don't swallow
-        // exceptions from actual bugs in components.
         (error) => {
           this.setState({
             isLoaded: true,
             error
           });
+          console.log(1);
         }
       )
-  }
-play = (classs) => {
-  // var node = document.createElement("div");              
-  // var textnode = document.createTextNode("Water");     
-  // node.appendChild(textnode);                             
-  // classs.target.offsetParent.closest(".cards").appendChild(node);   
-  const title = <div>Hello</div>;
-  ReactDOM.render(
-    title,
-    classs.target.offsetParent.closest(".cards")
-  );
-}
-  render() {
-    var groupSize = 5;
-    var rows = Object.keys(this.state.movies).map((item, key) => {
-      return (
-        <div className="card-wrapper" key={key}>
-        <div className="card-inner" onClick={(e) => this.play(e)}>
-          <CardImage image={this.state.movies[item].EventImageUrl} />
-          <div className="date">{this.state.movies[item].ShowDate.slice(0,-6)}</div>
-          <div className="backdrop">
-            <div className="ratings">
-                <div className="rating-percentage">
-                  <i className="fas fa-thumbs-up"></i>
-                  <span>99%</span>
-                </div>
-                  <div className="total-votes">
-                    18900 votes
-                  </div>
-              </div>
-              </div>
-            <div className="play-icon">
-          <i className="far fa-play-circle fa-4x"></i>
-          </div>
-          </div>
 
-        <CardTitle title={this.state.movies[item].EventTitle} />
-        <Player title={this.state.movies[item].EventTitle} />
-      </div>
+      // To check the screen width of window to make card listing responsive
+      window.addEventListener('resize', () => {
+        this.setState({screenWidth: window.innerWidth})
+      });
+  }
+
+  PlayerTrigger = (e, item) => {    
+    // Trigger player to show data once user clicked any card
+    this.setState({ player: true, playerOffsetParent: e.target.offsetParent.closest(".card-body").classList[1], playerData: item})
+  }
+
+  componentDidUpdate(){
+    // scroll window to the position of Player-Wrapper parent element once user clicked any card
+    this.state.playerOffsetParent && document.querySelector(`.${this.state.playerOffsetParent}`).scrollIntoView({ behavior: 'smooth', block: 'start'})
+  }
+  render() {
+    // Adding defined set of card in a row on the basis of screen width 
+    // and wrap row with class cards to show player just beneath the row when a movie card is clicked
+    
+    let rows = Object.keys(this.state.movies).map((item, key) => {
+      return (
+        <Card key={key} PlayerTrigger={this.PlayerTrigger} {...this.state.movies[item]} />
       )
-    }).reduce(function(r, element, index) {
-      // create element groups with size 3, result looks like:
-      // [[elem1, elem2, elem3], [elem4, elem5, elem6], ...]
-      index % groupSize === 0 && r.push([]);
-      r[r.length - 1].push(element);
-      return r;
-  }, []).map(function(rowContent, key) {
-      // surround every group with 'row'
-      return <div className={`cards cards${key}`}>{rowContent}</div>;
-  });
-    return <section className="movies-container">
-    {rows}
-      </section>;
+    }).reduce((arr, element, index) => {
+      
+      //set cards in a row depending on screen width
+      if(this.state.screenWidth > 1650) {
+        var groupSize = 6;
+      } else if(this.state.screenWidth > 1300 && this.state.screenWidth < 1650){
+        var groupSize = 3;
+      } else if(this.state.screenWidth > 800 && this.state.screenWidth < 1300){
+        var groupSize = 2;
+      } else {
+        var groupSize = 1;
+      }
+
+      // create element groups
+      index % groupSize === 0 && arr.push([]);
+      arr[arr.length - 1].push(element);
+      return arr;
+    },[]).map((rowContent, key) => {
+        return (
+        <div className={`card-body cards${key}`} key={key}>
+
+            {/* showing player on card click */}
+            {this.state.player && `cards${key}` === this.state.playerOffsetParent && (
+              <Player playerOffsetParent={this.state.playerOffsetParent}  {...this.state.playerData}  />
+            )}
+
+            {/* surround every group with 'cards./' */}
+            <div className={`cards`}>{rowContent}</div>
+        </div>
+        );
+    });
+
+    if(this.state.isLoaded) {
+      if(this.state.error) {
+        return <Error />
+      } else {
+        return  (
+          <section >
+            <Header />
+            <div className="movies-container">{rows}</div>
+          </section>
+        );
+      }
+    } else {
+      return <div className="loader"><img src={LoaderGif} /></div>;
+    }
   }
 }
 

@@ -8,30 +8,52 @@
 body {
   background-color: rgb(26, 26, 26);
 }
+.loader {
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Header CSS */
+nav {
+  height: 50px;
+  background: black;
+  display: flex;
+  margin-bottom: 20px;
+}
+nav h1 {
+  color: white;
+  margin: auto 40px !important;
+}
+
+/* Cards listing css */
 .cards {
   display: flex;
   flex-wrap: wrap;
 }
 .card-title {
-  margin: 10px 40px 0px !important;
+  margin: 5px 0px !important;
   font-size: 13px;
   color: white;
+  position: absolute;
 }
 .card-wrapper {
-  flex: 20%;
-  margin: 20px 0px !important;
+  flex: 15%;
+  margin: 20px 0px 50px !important;
 }
 .card-inner {
-  margin: 0px 40px !important;
   text-align: center;
   position: relative;
   cursor: pointer;
+  width: fit-content;
+  margin: auto;
 }
-img {
-  width: 300px;
+.Card-Image {
+  width: 250px;
 }
 .movies-container {
-  padding: 0px 10px;
+  padding: 0px 40px;
 }
 .date {
   position: absolute;
@@ -48,16 +70,25 @@ img {
   line-height: 20px;
   color: white;
 }
+.play-icon i {
+  color: white;
+  position: absolute;
+  top: 50%;
+  right: 50%;
+  transform: translate(50%, -50%);
+}
 
+/* Backdrop Shadow */
 .backdrop {
-  background: url(https://m.media-amazon.com/images/G/01/digital/video/storefronts/genre-image-fade._V1_.png)
-    0 100% repeat-x;
+  background: url("./assets/fade.png") 0 100% repeat-x;
   position: absolute;
   bottom: 5px;
   width: 100%;
   height: 100%;
   background-size: contain;
 }
+
+/* Ratings CSS */
 .ratings {
   position: absolute;
   bottom: 5px;
@@ -80,10 +111,137 @@ img {
   font-size: 12px;
 }
 
-.play-icon i {
+/* Player wrapper css */
+.player-wrapper {
+  display: flex;
+  flex-wrap: wrap;
+  padding: 15px;
+  margin: 0px 30px !important;
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+.player-wrapper .player-details .player-details-inner {
+  background: url(https://m.media-amazon.com/images/G/01/digital/video/storefronts/genre-image-fade._V1_.png)
+    0 100% repeat-x;
+  width: 100%;
+  background-size: contain;
+  height: 100%;
+  padding: 20px;
+}
+.player-wrapper .player-details,
+.player-wrapper .player-id {
+  flex: 50%;
+}
+.player-wrapper .player-details {
+  padding-left: 20px;
+}
+.player-wrapper .player-id iframe {
+  width: 100%;
+  border: none;
+}
+.player-wrapper .player-id {
+  padding-right: 20px;
+}
+.player-wrapper .player-details .player-details-inner .player-title {
+  font-weight: bold;
+}
+.player-wrapper .player-details .player-details-inner {
   color: white;
-  position: absolute;
-  top: 50%;
-  right: 50%;
-  transform: translate(50%, -50%);
+}
+.player-wrapper .player-details .player-details-inner .player-language {
+  color: rgb(170, 171, 169);
+}
+.player-wrapper .player-details .player-details-inner .player-genre-wrapper {
+  margin-top: 30px;
+}
+.player-wrapper
+  .player-details
+  .player-details-inner
+  .player-genre-wrapper
+  .genre {
+  color: rgb(170, 171, 169);
+  border: 1px solid rgb(170, 171, 169);
+  padding: 4px 20px;
+  margin-right: 10px;
+  border-radius: 20px;
+}
+.player-wrapper .player-details .player-details-inner .player-other-details {
+  display: flex;
+  margin-top: 30px;
+}
+.player-wrapper
+  .player-details
+  .player-details-inner
+  .player-other-details
+  .player-votes,
+.player-wrapper
+  .player-details
+  .player-details-inner
+  .player-other-details
+  .player-date {
+  display: flex;
+}
+.player-wrapper
+  .player-details
+  .player-details-inner
+  .player-other-details
+  .player-votes
+  i,
+.player-wrapper
+  .player-details
+  .player-details-inner
+  .player-other-details
+  .player-date
+  i {
+  margin: auto 10px auto 0;
+}
+.player-wrapper
+  .player-details
+  .player-details-inner
+  .player-other-details
+  .player-date {
+  margin-left: 50px;
+}
+.player-wrapper
+  .player-details
+  .player-details-inner
+  .player-other-details
+  .player-votes
+  .player-votes-inner
+  div:last-child,
+.player-wrapper
+  .player-details
+  .player-details-inner
+  .player-other-details
+  .player-date
+  .player-date-inner
+  div:last-child {
+  color: rgb(170, 171, 169);
+}
+/* Error CSS */
+.error {
+  text-align: center;
+  padding-top: 30px;
+  color: white;
+}
+@media screen and (max-width: 1200px) {
+  .player-wrapper .player-details,
+  .player-wrapper .player-id {
+    flex: 100%;
+  }
+  .player-wrapper .player-id {
+    padding: 0px;
+  }
+  .player-wrapper .player-details .player-details-inner .player-other-details {
+    justify-content: center;
+    text-align: left;
+  }
+  .player-wrapper .player-details .player-details-inner {
+    text-align: center;
+  }
+}
+@media screen and (max-width: 768px) {
+  .Card-Image {
+    width: 400px;
+  }
 }

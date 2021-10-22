@@ -3,7 +3,7 @@ import React from "react";
 function CardTitle(props) {
   return (
     <h1 className="card-title">
-      {props.title}
+      {props.value}
     </h1>
   );
 }
